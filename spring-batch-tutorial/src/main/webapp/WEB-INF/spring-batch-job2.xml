@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       	xmlns:p="http://www.springframework.org/schema/p" 
+       	xmlns:tx="http://www.springframework.org/schema/tx"
+       	xmlns:context="http://www.springframework.org/schema/context"
+       	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       	xmlns:util="http://www.springframework.org/schema/util"
+       	xmlns:aop="http://www.springframework.org/schema/aop"
+       	xmlns:batch="http://www.springframework.org/schema/batch"
+       	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+			http://www.springframework.org/schema/tx 
+			http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-3.1.xsd
+			http://www.springframework.org/schema/jdbc 
+			http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+			http://www.springframework.org/schema/util 
+			http://www.springframework.org/schema/util/spring-util-3.1.xsd
+			http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+			http://www.springframework.org/schema/batch 
+			http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
+
+	<context:property-placeholder properties-ref="deployProperties" />
+
+	<job id="batchJob2" xmlns="http://www.springframework.org/schema/batch">
+		<step id="userload2" next="roleLoad2">
+			<tasklet>
+				<chunk reader="userFileItemReader2" writer="userWriter" 
+	                   commit-interval="${job.commit.interval}" />
+			</tasklet>
+		</step>
+		<step id="roleLoad2">
+			<tasklet>
+				<chunk reader="roleFileItemReader2" writer="roleWriter" 
+	                   commit-interval="${job.commit.interval}" />
+			</tasklet>
+		</step>
+	</job>
+
+	<bean id="userFileItemReader2" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource" value="classpath:${user2.file.name}" />
+		<property name="lineMapper">
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+				<property name="lineTokenizer">
+					<bean class="org.springframework.batch.item.file.transform.FixedLengthTokenizer">
+						<property name="names" value="username,firstName,lastName,password" />
+    					<property name="columns" value="1-5, 6-9, 10-16, 17-25" />
+					</bean>
+				</property>
+				<property name="fieldSetMapper">
+					<bean class="org.krams.batch.UserFieldSetMapper" />
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="roleFileItemReader2" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource" value="classpath:${role2.file.name}" />
+		<property name="lineMapper">
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+				<property name="lineTokenizer">
+					<bean class="org.springframework.batch.item.file.transform.FixedLengthTokenizer">
+						<property name="names" value="username,role" />
+    					<property name="columns" value="1-5, 6" />
+					</bean>
+				</property>
+				<property name="fieldSetMapper">
+					<bean class="org.krams.batch.RoleFieldSetMapper" />
+				</property>
+			</bean>
+		</property>
+	</bean>
+		
+</beans>

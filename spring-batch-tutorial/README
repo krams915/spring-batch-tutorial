@@ -1,0 +1,18 @@
+Description
+===========
+Sample application demonstrating how to integrate Spring Batch and Spring MVC 3.1
+
+To read the whole guide, please see the original blog:
+
+"Spring Batch Tutorial"
+http://krams915.blogspot.com/2012/02/spring-batch-tutorial-part-1.html
+
+
+Building
+========
+Please visit http://krams915.blogspot.com/2012/02/spring-batch-tutorial-part-4.html for full instructions
+
+
+Notes
+=====
+For more tutorials, please visit http://krams915.blogspot.com/
